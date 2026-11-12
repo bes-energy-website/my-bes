@@ -17,7 +17,7 @@ run_worker_first = true      # every request passes the sign-in check
 [vars]
 # Entra app registration: my BES Hub
 ENTRA_TENANT_ID = "aed873fa-6311-4938-beba-99ea3658a0b0"
-ENTRA_CLIENT_ID = "PASTE-APPLICATION-CLIENT-ID-HERE"
+ENTRA_CLIENT_ID = "5155e822-4171-4e77-9e7b-07731c55e7fc"
 ENTRA_DOMAIN_HINT = "bes-energy.com"
 
 # Secrets (Workers & Pages › my-bes › Settings › Variables and secrets):
