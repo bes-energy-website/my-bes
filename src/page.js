@@ -44,6 +44,14 @@ function greeting(date = new Date()) {
   return h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
 }
 
+// e.g. "Wed 11 Nov 2026, 4:12 p.m." in Vancouver time
+function fmtTime(sec) {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Vancouver", weekday: "short", day: "numeric", month: "short", year: "numeric",
+    hour: "numeric", minute: "2-digit",
+  }).format(new Date(sec * 1000));
+}
+
 // ---------- launcher (signed in) ----------
 export function renderPage(user, sites, now = new Date()) {
   const first = (user.name || "").split(/\s+/)[0] || "there";
@@ -81,6 +89,7 @@ export function renderPage(user, sites, now = new Date()) {
   .hero .in{max-width:1040px;margin:0 auto;padding:0 20px}
   .hero h1{margin:0 0 4px;font-size:26px;font-weight:600}
   .hero p{margin:0;color:#B9C6D6}
+  .hero p.last{margin-top:6px;font-size:13px;color:#9FB0C4}
   main{flex:1;max-width:1040px;width:100%;margin:-48px auto 0;padding:0 20px 40px}
   .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
   @media (max-width:720px){.grid{grid-template-columns:1fr}.hero h1{font-size:22px}.who .email,.brand .div,.brand span{display:none}}
@@ -111,6 +120,7 @@ export function renderPage(user, sites, now = new Date()) {
 <section class="hero"><div class="in">
   <h1>${greeting(now)}, ${esc(first)}</h1>
   <p>BES internal tools — pick a site to open it. You're already signed in with your BES Microsoft account.</p>
+  <p class="last">${user.prev ? `Last visit: ${esc(fmtTime(user.prev))}` : "First visit on this device"}</p>
 </div></section>
 <main><div class="grid">${tiles}</div></main>
 <footer>BES – Building Energy Solutions Ltd. · Internal use only</footer>

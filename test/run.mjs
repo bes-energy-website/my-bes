@@ -71,3 +71,29 @@ import { writeFileSync } from "node:fs";
 const dir = process.argv[2] || ".";
 writeFileSync(dir + "/signin.html", renderSignIn());
 writeFileSync(dir + "/preview.html", renderPage({ name: "Sean Mac Aodh", email: "smacaodh@bes-energy.com" }, SITES, new Date("2026-11-12T16:10:00Z")));
+
+// 5. last visit
+{
+  const { sign } = await import("../src/index.js");
+  const ck = (r) => r.headers.getSetCookie().map((c) => c.split(";")[0]).join("; ");
+  const first = await (await worker.fetch(new Request(O + "/", { headers: { Cookie: cookiesFrom(r3) } }), env)).text();
+  assert.ok(first.includes("First visit on this device")); console.log("✓ first visit message");
+  const t = Math.floor(Date.now() / 1000);
+  const base = { name: "Sean Mac Aodh", email: "smacaodh@bes-energy.com", oid: "1", exp: t + 9999 };
+  // refresh within 30 min → still first visit
+  const s1 = await sign({ ...base, prev: null, seen: t - 600, last: t - 60 }, env.SESSION_SECRET);
+  assert.ok((await (await worker.fetch(new Request(O + "/", { headers: { Cookie: "mybes_session=" + s1 } }), env)).text()).includes("First visit")); console.log("✓ refresh is same visit");
+  // come back 2 h later → shows previous visit
+  const seen = 1794495600; // 2026-11-12 08:20 PST
+  const s2 = await sign({ ...base, prev: null, seen, last: seen + 300 }, env.SESSION_SECRET);
+  const r = await worker.fetch(new Request(O + "/", { headers: { Cookie: "mybes_session=" + s2 } }), env);
+  const txt = await r.text(); const m = txt.match(/Last visit: ([^<]+)/); assert.ok(m); console.log("✓ return visit shows:", m[1]);
+  // sign out + sign in again → previous visit carried over by mybes_last
+  const lastCk = ck(r).split("; ").find((c) => c.startsWith("mybes_last="));
+  claims = good;
+  const lg = await worker.fetch(new Request(O + "/api/auth/login"), env);
+  const st = new URL(lg.headers.get("Location")).searchParams.get("state");
+  const cb = await worker.fetch(new Request(`${O}/api/auth/callback?code=a&state=${st}`, { headers: { Cookie: cookiesFrom(lg) + "; " + lastCk } }), env);
+  const after = await (await worker.fetch(new Request(O + "/", { headers: { Cookie: cookiesFrom(cb) } }), env)).text();
+  assert.ok(/Last visit: /.test(after)); console.log("✓ last visit survives sign-out/sign-in");
+}

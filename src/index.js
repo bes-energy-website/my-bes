@@ -11,6 +11,7 @@ import { renderPage, renderSignIn, renderSignedOut, renderError } from "./page.j
 
 const SESSION_COOKIE = "mybes_session";
 const OAUTH_COOKIE = "mybes_oauth";
+const LAST_COOKIE = "mybes_last"; // remembers the last visit time across sign-outs (this browser only)
 const SESSION_DAYS = 30; // sliding: renewed on every visit, same as Project Manager
 
 // ---------- helpers ----------
@@ -84,10 +85,24 @@ async function newSession(user, env) {
   const token = await sign({ ...user, exp: nowSec() + SESSION_DAYS * 86400 }, env.SESSION_SECRET);
   return setCookie(SESSION_COOKIE, token, SESSION_DAYS * 86400);
 }
+async function lastVisitCookie(user, env) {
+  const token = await sign({ email: user.email, seen: user.seen, exp: nowSec() + 365 * 86400 }, env.SESSION_SECRET);
+  return setCookie(LAST_COOKIE, token, 365 * 86400);
+}
+const VISIT_GAP = 30 * 60; // visits closer than 30 min count as the same visit (refreshes, tile clicks)
+
 async function currentUser(req, env) {
   const s = await verify(getCookie(req, SESSION_COOKIE), env.SESSION_SECRET);
   if (!s) return null;
-  const user = { name: s.name, email: s.email, oid: s.oid };
+  // seen = start of the current visit, prev = start of the visit before it
+  const t = nowSec();
+  const newVisit = !s.seen || t - (s.last || s.seen) > VISIT_GAP;
+  const user = {
+    name: s.name, email: s.email, oid: s.oid,
+    prev: newVisit ? s.seen || null : s.prev || null,
+    seen: newVisit ? t : s.seen,
+    last: t,
+  };
   return { ...user, renew: await newSession(user, env) };
 }
 
@@ -162,7 +177,11 @@ async function callback(req, env) {
   if (!email.endsWith("@" + domain(env))) problems.push(`only @${domain(env)} accounts can sign in`);
   if (problems.length) return html(renderError(`Access denied: ${problems.join("; ")}.`), 403, [clearFlow]);
 
-  const session = await newSession({ name: claims.name || email, email, oid: claims.oid }, env);
+  // Carry the previous visit over a fresh sign-in (same browser), so "Last visit" survives sign-out
+  const old = await verify(getCookie(req, LAST_COOKIE), env.SESSION_SECRET);
+  const prev = old && old.email === email ? old.seen : null;
+  const t = nowSec();
+  const session = await newSession({ name: claims.name || email, email, oid: claims.oid, prev, seen: t, last: t }, env);
   return redirect("/", [session, clearFlow]);
 }
 
@@ -201,6 +220,6 @@ export default {
 
     if (pathname !== "/") return redirect("/");
     if (!user) return html(renderSignIn());
-    return html(renderPage(user, SITES), 200, [user.renew]);
+    return html(renderPage(user, SITES), 200, [user.renew, await lastVisitCookie(user, env)]);
   },
 };
