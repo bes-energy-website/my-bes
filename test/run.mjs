@@ -24,7 +24,7 @@ async function signIn(c) {
   claims = c;
   const r1 = await worker.fetch(new Request(O + "/"), env);
   assert.equal(r1.status, 200); const t1 = await r1.text();
-  assert.ok(t1.includes("Sign in with Microsoft") && t1.includes("/assets/bes-logo.jpg"), "branded sign-in page");
+  assert.ok(t1.includes("Sign in with Microsoft") && t1.includes("/assets/bes-mark.png"), "branded sign-in page");
   const r2 = await worker.fetch(new Request(O + "/api/auth/login"), env);
   const auth = new URL(r2.headers.get("Location"));
   assert.equal(auth.host, "login.microsoftonline.com");

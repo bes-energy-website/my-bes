@@ -124,7 +124,7 @@ function card({ title, message, button, href, ms = false }) {
 <style>
   body{background:linear-gradient(160deg,var(--navy) 0,var(--navy-2) 100%);align-items:center;justify-content:center;padding:20px}
   .card{width:100%;max-width:420px;background:#fff;color:#16283F;border-radius:14px;padding:34px 30px 28px;box-shadow:0 20px 50px rgba(0,0,0,.25);text-align:center}
-  .card img{width:230px;max-width:80%;height:auto;display:block;margin:0 auto 22px}
+  .card img{width:170px;max-width:80%;height:auto;display:block;margin:0 auto 22px}
   h1{margin:0 0 6px;font-size:21px;font-weight:600}
   p{margin:0 0 22px;color:#56667A}
   .btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;background:var(--green-dk);color:#fff;text-decoration:none;font-weight:600;padding:12px 16px;border-radius:8px}
@@ -137,7 +137,7 @@ function card({ title, message, button, href, ms = false }) {
 </head>
 <body>
 <main class="card">
-  <img src="/assets/bes-logo.jpg" alt="BES – Building Energy Solutions Ltd.">
+  <img src="/assets/bes-mark.png" alt="BES – Building Energy Solutions Ltd.">
   <h1>${esc(title)}</h1>
   <p>${esc(message)}</p>
   <a class="btn${ms ? " ms" : ""}" href="${esc(href)}">${ms ? MS_LOGO : ""}${esc(button)}</a>

@@ -173,7 +173,7 @@ function logout(req, env) {
 }
 
 // ---------- entry ----------
-const PUBLIC_ASSETS = ["/favicon.png", "/apple-touch-icon.png", "/assets/bes-logo.jpg", "/assets/bes-mark.png", "/assets/bes-mark-light.png"];
+const PUBLIC_ASSETS = ["/favicon.png", "/apple-touch-icon.png", "/assets/bes-mark.png", "/assets/bes-mark-light.png"];
 
 export default {
   async fetch(req, env) {
