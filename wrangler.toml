@@ -1,5 +1,5 @@
 # my BES · my.bes-energy.com — launcher for BES internal sites (Cloudflare Worker + Microsoft sign-in)
-name = "bes-my-hub"
+name = "my-bes"
 main = "src/index.js"
 compatibility_date = "2026-10-01"
 workers_dev = false          # only my.bes-energy.com
@@ -20,6 +20,6 @@ ENTRA_TENANT_ID = "aed873fa-6311-4938-beba-99ea3658a0b0"
 ENTRA_CLIENT_ID = "PASTE-APPLICATION-CLIENT-ID-HERE"
 ENTRA_DOMAIN_HINT = "bes-energy.com"
 
-# Secrets (Workers & Pages › bes-my-hub › Settings › Variables and secrets):
+# Secrets (Workers & Pages › my-bes › Settings › Variables and secrets):
 #   ENTRA_CLIENT_SECRET  – client secret from the my BES Hub app registration
 #   SESSION_SECRET       – a long random string, different from the other BES sites

@@ -70,7 +70,7 @@ account that holds bes-energy.com. No software install is needed.
 1. **dash.cloudflare.com** → *Workers & Pages* → **Create** → **Import a repository**.
 2. Connect GitHub if asked, and allow access to `my-bes`. Select `my-bes`.
 3. Settings on the next screen:
-   - Project name: **`bes-my-hub`** (must match `name` in wrangler.toml)
+   - Project name: **`my-bes`** (must match `name` in wrangler.toml)
    - Build command: *(leave empty)*
    - Deploy command: `npx wrangler deploy` (default)
    - Root directory: `/`
@@ -81,7 +81,7 @@ account that holds bes-energy.com. No software install is needed.
 
 ## Step 5 — Add the two secrets
 
-*Workers & Pages* → **bes-my-hub** → *Settings* → *Variables and secrets* → **Add**:
+*Workers & Pages* → **my-bes** → *Settings* → *Variables and secrets* → **Add**:
 
 | Type | Name | Value |
 |---|---|---|
