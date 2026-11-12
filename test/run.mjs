@@ -77,12 +77,12 @@ writeFileSync(dir + "/preview.html", renderPage({ name: "Sean Mac Aodh", email: 
   const { sign } = await import("../src/index.js");
   const ck = (r) => r.headers.getSetCookie().map((c) => c.split(";")[0]).join("; ");
   const first = await (await worker.fetch(new Request(O + "/", { headers: { Cookie: cookiesFrom(r3) } }), env)).text();
-  assert.ok(first.includes("First visit on this device")); console.log("✓ first visit message");
+  assert.ok(first.includes("Signed in: ") && !first.includes("Last visit")); console.log("✓ first visit shows sign-in time");
   const t = Math.floor(Date.now() / 1000);
   const base = { name: "Sean Mac Aodh", email: "smacaodh@bes-energy.com", oid: "1", exp: t + 9999 };
   // refresh within 30 min → still first visit
   const s1 = await sign({ ...base, prev: null, seen: t - 600, last: t - 60 }, env.SESSION_SECRET);
-  assert.ok((await (await worker.fetch(new Request(O + "/", { headers: { Cookie: "mybes_session=" + s1 } }), env)).text()).includes("First visit")); console.log("✓ refresh is same visit");
+  assert.ok((await (await worker.fetch(new Request(O + "/", { headers: { Cookie: "mybes_session=" + s1 } }), env)).text()).includes("Last visit") === false); console.log("✓ refresh is same visit");
   // come back 2 h later → shows previous visit
   const seen = 1794495600; // 2026-11-12 08:20 PST
   const s2 = await sign({ ...base, prev: null, seen, last: seen + 300 }, env.SESSION_SECRET);

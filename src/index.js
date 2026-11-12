@@ -99,6 +99,7 @@ async function currentUser(req, env) {
   const newVisit = !s.seen || t - (s.last || s.seen) > VISIT_GAP;
   const user = {
     name: s.name, email: s.email, oid: s.oid,
+    signin: s.signin || s.seen || t, // time of the Microsoft sign-in (older sessions: first recorded visit)
     prev: newVisit ? s.seen || null : s.prev || null,
     seen: newVisit ? t : s.seen,
     last: t,
@@ -181,7 +182,7 @@ async function callback(req, env) {
   const old = await verify(getCookie(req, LAST_COOKIE), env.SESSION_SECRET);
   const prev = old && old.email === email ? old.seen : null;
   const t = nowSec();
-  const session = await newSession({ name: claims.name || email, email, oid: claims.oid, prev, seen: t, last: t }, env);
+  const session = await newSession({ name: claims.name || email, email, oid: claims.oid, signin: t, prev, seen: t, last: t }, env);
   return redirect("/", [session, clearFlow]);
 }
 

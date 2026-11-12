@@ -120,7 +120,7 @@ export function renderPage(user, sites, now = new Date()) {
 <section class="hero"><div class="in">
   <h1>${greeting(now)}, ${esc(first)}</h1>
   <p>BES internal tools — pick a site to open it. You're already signed in with your BES Microsoft account.</p>
-  <p class="last">${user.prev ? `Last visit: ${esc(fmtTime(user.prev))}` : "First visit on this device"}</p>
+  <p class="last">Signed in: ${esc(fmtTime(user.signin || Date.now() / 1000))}${user.prev ? ` · Last visit: ${esc(fmtTime(user.prev))}` : ""}</p>
 </div></section>
 <main><div class="grid">${tiles}</div></main>
 <footer>BES – Building Energy Solutions Ltd. · Internal use only</footer>
