@@ -49,7 +49,7 @@ account that holds bes-energy.com. No software install is needed.
 
 1. Unzip `bes-my-hub.zip`.
 2. Open `bes-my-hub\wrangler.toml` in Notepad.
-3. Replace `PASTE-APPLICATION-CLIENT-ID-HERE` with the client ID from Step 1.3 → Save.
+3. Check `ENTRA_CLIENT_ID` matches the client ID from Step 1.3 (already set to `5155e822-4171-4e77-9e7b-07731c55e7fc`).
 
 ## Step 3 — GitHub repository
 
